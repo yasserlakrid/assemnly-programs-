@@ -75,20 +75,20 @@ TRAVERSE_INV PROC
     MOV BP , SP
     MOV SI , [BP+4] ; THE ADDRESS OF THE LAST NODE 
     WHILEI: 
-    CMP LIST[SI+4] , 0FFFFH 
+    CMP [SI+4] , 0FFFFH 
     JE ENDINGI 
-    MOV AX , LIST[SI] 
-    MOV SI , LIST[SI+4]
+    MOV AX , [SI] 
+    MOV SI , [SI+4]
     JMP WHILEI 
     ENDINGI:
-    MOV SI , LIST[SI+4]
-    MOV AX , LIST[SI] 
+    MOV SI , [SI+4]
+    MOV AX , [SI] 
     MOV CX , SI ;RETURNING THE VALUE OF THE FIRST NODE 
      
     POP BP 
     RET 2 
     TRAVERSE_INV ENDP 
-;ASSIGN THE VALUE OF THE PREVIOUS NODES 
+
 DBLIST PROC
     MOV SI , 0
     MOV LIST[4]  , 0FFFFH
@@ -103,8 +103,11 @@ DBLIST PROC
     
     JMP WHILED
     
-    ENDINGD: 
-    MOV LIST[SI+10] , OFFSET LIST[SI+8]
+    ENDINGD:      
+    MOV BP , OFFSET LIST 
+    ADD BP , SI 
+    
+    MOV LIST[SI+10] , SI 
     
     RET
     DBLIST ENDP         
