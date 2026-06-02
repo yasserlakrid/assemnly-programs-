@@ -1,0 +1,14 @@
+DATA SEGMENT
+DATA ENDS
+CODE SEGMENT
+    START :
+    MOV AH ,5
+    MOV AL ,4
+    ADD AL , AH
+    SUB AH , AL
+    NEG AH 
+    SUB AL , AH 
+        
+    END START
+     
+CODE ENDS

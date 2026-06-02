@@ -1,0 +1,52 @@
+DATA SEGMENT 
+TEXT DB "bonjur my name is YASSER lakrid ."
+LENGTH1 DW $-TEXT
+STRING DB "YASSER"
+LENGTH2 DW $-STRING 
+MSG1 DB "STRING EXIST$"
+MSG2 DB  "STRING DOES NOT EXIST$"
+DATA ENDS 
+CODE SEGMENT
+ASSUME DS:DATA , CS:CODE
+START:
+MOV AX , DATA
+MOV DS , AX
+MOV CX , LENGTH1 
+MOV SI , 0
+
+OUTWHILE:          
+    CMP SI , LENGTH1
+    JE EXIT  
+    
+    MOV BX , 0
+    FOR:
+       CMP BX , LENGTH2  
+       JE EXIST ;THAT MEANS THE SUBSTRING EXISTS IN THE TEXT 
+       MOV CL , TEXT[SI] ; THE TEXT CHARACTER
+       INC SI
+       MOV DL  ,  STRING[BX]    ; THE SUBSTRING CHARACTER 
+       INC BX
+        
+       CMP CL , DL
+       
+       JE FOR  
+    
+
+           
+    JMP OUTWHILE
+EXIST:
+   LEA DX , MSG1
+   MOV AH ,09H
+   INT 21H
+   MOV AH ,4CH
+   INT 21H
+JMP END                    
+EXIT: 
+    LEA DX , MSG2
+    MOV AH , 09H
+    INT 21H
+    MOV AH , 4CH
+    INT 21H
+END:
+CODE ENDS 
+END START
