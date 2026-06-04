@@ -1,3 +1,4 @@
+
 DATA SEGMENT 
     LIST DW 20 DUP(?, 0FFFFh, 0FFFFh)   ; ? works in MASM if ? is alone in pattern
     
@@ -9,12 +10,53 @@ START:
 MOV AX , DATA
 MOV DS , AX 
     CALL BUILD 
-    CALL DBLIST
+   
+    
+    CALL DBLIST 
+      
+     PUSH 5
+    CALL DELETE 
     CALL TRAVERSE
+    
     PUSH CX  
     CALL TRAVERSE_INV 
 MOV AH , 4CH 
 INT 21H
+DELETE PROC
+    PUSH BP 
+    MOV BP , SP
+    
+    MOV DX , [BP+4] ; LOAD THE VALUE WE WANT TO DELETE WE PUSHED AS A PARAMETER
+    MOV SI ,0 
+    
+    WHILEDE:   
+    CMP LIST[SI] , DX
+    JE FOUND
+     
+    CMP LIST[SI + 2] , 0FFFFH ;CHECK FOR THE END OF THE LIST 
+    JE ENDINGDE
+     
+    MOV SI , LIST[SI+2] ;HEAD = HEAD -> NEXT  
+      
+    JMP WHILEDE
+    FOUND: 
+    
+    MOV LIST[SI] , 0FFFFH;THE DELETED VALUE WILL BE FFFF
+    
+    MOV BP , LIST[SI+2];THE NEXT ELEMENT  
+    MOV BX , LIST[SI+4];THE PREVIOUS ELEMENT
+    
+    MOV LIST[BP+4] , BX 
+    MOV LIST[BX+2] , BP 
+    
+    MOV LIST[SI+2] , 0FFFFH;ELEMENT NEXT NOW IS NULL
+    MOV LIST[SI+4] , 0FFFFH;ELMENT PREV IS NOW NULL  
+    
+    ENDINGDE:
+       
+    POP BP             
+    RET 2          
+    DELETE ENDP 
 ;ASSIGN A READ DIGIT AND THE VALUE OF THE NEXT NODE 
  
 BUILD PROC
